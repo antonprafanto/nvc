@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
@@ -18,6 +18,8 @@ import {
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Module, Lesson } from '@/data/modules'
+import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
 
 interface LessonDetailProps {
   module: Module
@@ -25,17 +27,108 @@ interface LessonDetailProps {
 }
 
 export default function LessonDetail({ module, lesson }: LessonDetailProps) {
+  const { user } = useAuth()
   const [isCompleted, setIsCompleted] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
   const [videoPlaying, setVideoPlaying] = useState(false)
+  const [notes, setNotes] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (user) {
+      fetchLessonProgress()
+    } else {
+      setLoading(false)
+    }
+  }, [user, module.id, lesson.id])
+
+  const fetchLessonProgress = async () => {
+    if (!user) return
+
+    try {
+      // Check if lesson is completed
+      const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('module_id', module.id.toString())
+        .eq('lesson_id', lesson.id.toString())
+        .single()
+
+      if (progressData) {
+        setIsCompleted(progressData.completed || false)
+        setReadingProgress(progressData.progress_percentage || 0)
+      }
+
+      // Fetch lesson notes
+      const { data: notesData } = await supabase
+        .from('lesson_notes')
+        .select('notes')
+        .eq('user_id', user.id)
+        .eq('module_id', module.id.toString())
+        .eq('lesson_id', lesson.id.toString())
+        .single()
+
+      if (notesData) {
+        setNotes(notesData.notes || '')
+      }
+
+    } catch (error) {
+      console.error('Error fetching lesson progress:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const currentLessonIndex = module.lessons.findIndex(l => l.id === lesson.id)
   const nextLesson = module.lessons[currentLessonIndex + 1]
   const prevLesson = module.lessons[currentLessonIndex - 1]
 
-  const handleComplete = () => {
-    setIsCompleted(true)
-    // In real app, this would update the backend
+  const handleComplete = async () => {
+    if (!user) return
+
+    try {
+      // Update or insert lesson progress
+      const { error } = await supabase
+        .from('user_progress')
+        .upsert({
+          user_id: user.id,
+          module_id: module.id.toString(),
+          lesson_id: lesson.id.toString(),
+          completed: true,
+          progress_percentage: 100,
+          completed_at: new Date().toISOString()
+        })
+
+      if (!error) {
+        setIsCompleted(true)
+        setReadingProgress(100)
+      }
+    } catch (error) {
+      console.error('Error completing lesson:', error)
+    }
+  }
+
+  const saveNotes = async () => {
+    if (!user) return
+
+    try {
+      const { error } = await supabase
+        .from('lesson_notes')
+        .upsert({
+          user_id: user.id,
+          module_id: module.id.toString(),
+          lesson_id: lesson.id.toString(),
+          notes: notes
+        })
+
+      if (!error) {
+        // Show success feedback
+        console.log('Notes saved successfully')
+      }
+    } catch (error) {
+      console.error('Error saving notes:', error)
+    }
   }
 
   const handleScrollProgress = () => {
@@ -325,10 +418,12 @@ console.log("Hello from VibeCoding!");`}
                   </CardHeader>
                   <CardContent>
                     <textarea 
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
                       placeholder="Tulis catatan Anda di sini..."
                       className="w-full h-32 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                     />
-                    <Button size="sm" className="w-full mt-3">
+                    <Button size="sm" className="w-full mt-3" onClick={saveNotes} disabled={!user}>
                       Simpan Catatan
                     </Button>
                   </CardContent>

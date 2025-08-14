@@ -8,17 +8,61 @@ import { Clock, Users, Award, BookOpen, Play, CheckCircle, Lock, ArrowLeft } fro
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Module } from '@/data/modules'
+import { useAuth } from '@/hooks/useAuth'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface ModuleDetailProps {
   module: Module
 }
 
+interface UserProgress {
+  moduleProgress: number
+  completedLessons: number[]
+  currentLesson: number | null
+}
+
 export default function ModuleDetail({ module }: ModuleDetailProps) {
-  // Mock progress data
-  const userProgress = {
-    moduleProgress: 25,
-    completedLessons: [1],
-    currentLesson: 2
+  const { user } = useAuth()
+  const [userProgress, setUserProgress] = useState<UserProgress>({
+    moduleProgress: 0,
+    completedLessons: [],
+    currentLesson: null
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProgress()
+    } else {
+      setUserProgress({ moduleProgress: 0, completedLessons: [], currentLesson: null })
+      setLoading(false)
+    }
+  }, [user, module.id])
+
+  const fetchUserProgress = async () => {
+    if (!user) return
+
+    try {
+      const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('module_id', module.id.toString())
+        .single()
+
+      if (progressData) {
+        setUserProgress({
+          moduleProgress: progressData.progress_percentage || 0,
+          completedLessons: [], // TODO: Track individual lessons
+          currentLesson: progressData.lesson_id ? parseInt(progressData.lesson_id) : null
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching user progress:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const difficultyColors = {
@@ -33,6 +77,23 @@ export default function ModuleDetail({ module }: ModuleDetailProps) {
 
   const isLessonUnlocked = (lessonIndex: number) => {
     return lessonIndex === 0 || isLessonCompleted(module.lessons[lessonIndex - 1].id)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="bg-gray-300 dark:bg-gray-700 rounded-xl h-64 mb-8"></div>
+            <div className="space-y-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-gray-300 dark:bg-gray-700 rounded-lg h-20"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

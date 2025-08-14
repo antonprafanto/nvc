@@ -8,16 +8,95 @@ import { Clock, Users, Award, BookOpen, Lock, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { moduleData } from '@/data/modules'
+import { useAuth } from '@/hooks/useAuth'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface UserProgress {
+  id: string
+  module_id: string
+  completed: boolean
+  progress_percentage: number
+}
 
 export default function ModulesOverview() {
-  // Mock progress data - in real app, this would come from user's progress
-  const userProgress = {
-    1: { completed: true, progress: 100 },
-    2: { completed: false, progress: 75 },
-    3: { completed: false, progress: 25 },
-    4: { completed: false, progress: 0 },
-    5: { completed: false, progress: 0 },
-    6: { completed: false, progress: 0 },
+  const { user } = useAuth()
+  const [userProgress, setUserProgress] = useState<Record<number, { completed: boolean; progress: number }>>({})
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({
+    completedModules: 0,
+    overallProgress: 0,
+    totalHours: 0,
+    badgesEarned: 0
+  })
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProgress()
+    } else {
+      // For logged out users, initialize with empty progress
+      initializeEmptyProgress()
+    }
+  }, [user])
+
+  const initializeEmptyProgress = () => {
+    const emptyProgress: Record<number, { completed: boolean; progress: number }> = {}
+    moduleData.forEach(module => {
+      emptyProgress[module.id] = { completed: false, progress: 0 }
+    })
+    setUserProgress(emptyProgress)
+    setStats({ completedModules: 0, overallProgress: 0, totalHours: 0, badgesEarned: 0 })
+    setLoading(false)
+  }
+
+  const fetchUserProgress = async () => {
+    if (!user) return
+
+    try {
+      // Fetch user progress
+      const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+
+      // Fetch achievements for badge count
+      const { data: achievementsData } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('user_id', user.id)
+
+      // Process progress data
+      const progress: Record<number, { completed: boolean; progress: number }> = {}
+      let completedModules = 0
+      let totalProgress = 0
+
+      moduleData.forEach(module => {
+        const moduleProgress = progressData?.find((p: UserProgress) => parseInt(p.module_id) === module.id)
+        progress[module.id] = {
+          completed: moduleProgress?.completed || false,
+          progress: moduleProgress?.progress_percentage || 0
+        }
+        
+        if (moduleProgress?.completed) completedModules++
+        totalProgress += moduleProgress?.progress_percentage || 0
+      })
+
+      const overallProgress = Math.round(totalProgress / moduleData.length)
+      
+      setUserProgress(progress)
+      setStats({
+        completedModules,
+        overallProgress,
+        totalHours: completedModules * 8, // Estimate: 8 hours per completed module
+        badgesEarned: achievementsData?.length || 0
+      })
+
+    } catch (error) {
+      console.error('Error fetching user progress:', error)
+      initializeEmptyProgress()
+    } finally {
+      setLoading(false)
+    }
   }
 
   const difficultyColors = {
@@ -30,6 +109,24 @@ export default function ModulesOverview() {
     if (moduleId === 1) return true
     const previousModule = moduleData.find(m => m.id === moduleId - 1)
     return previousModule ? userProgress[previousModule.id]?.completed : false
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="bg-gray-300 dark:bg-gray-700 rounded-xl h-32 mb-12"></div>
+            <div className="bg-gray-300 dark:bg-gray-700 rounded-xl h-40 mb-12"></div>
+            <div className="grid lg:grid-cols-2 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-gray-300 dark:bg-gray-700 rounded-lg h-96"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -61,7 +158,7 @@ export default function ModulesOverview() {
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-                2/6
+                {stats.completedModules}/6
               </div>
               <div className="text-gray-600 dark:text-gray-400">
                 Modul Selesai
@@ -70,7 +167,7 @@ export default function ModulesOverview() {
             
             <div className="text-center">
               <div className="text-3xl font-bold text-secondary-600 dark:text-secondary-400 mb-2">
-                33%
+                {stats.overallProgress}%
               </div>
               <div className="text-gray-600 dark:text-gray-400">
                 Progress Keseluruhan
@@ -79,7 +176,7 @@ export default function ModulesOverview() {
             
             <div className="text-center">
               <div className="text-3xl font-bold text-success-600 dark:text-success-400 mb-2">
-                24
+                {stats.totalHours}
               </div>
               <div className="text-gray-600 dark:text-gray-400">
                 Jam Belajar
@@ -88,7 +185,7 @@ export default function ModulesOverview() {
             
             <div className="text-center">
               <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-                3
+                {stats.badgesEarned}
               </div>
               <div className="text-gray-600 dark:text-gray-400">
                 Badge Earned
@@ -99,9 +196,9 @@ export default function ModulesOverview() {
           <div className="mt-6">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
               <span>Progress Keseluruhan</span>
-              <span>33%</span>
+              <span>{stats.overallProgress}%</span>
             </div>
-            <Progress value={33} className="h-3" />
+            <Progress value={stats.overallProgress} className="h-3" />
           </div>
         </motion.div>
 

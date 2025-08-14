@@ -16,41 +16,124 @@ import {
   CheckCircle,
   Star,
   Flame,
-  Users
+  Users,
+  BookOpenCheck,
+  Sparkles
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { moduleData } from '@/data/modules'
+import { useAuth } from '@/hooks/useAuth'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface UserProgress {
+  id: string
+  module_id: string
+  lesson_id?: string
+  completed: boolean
+  progress_percentage: number
+  completed_at?: string
+}
+
+interface Achievement {
+  id: string
+  badge_id: string
+  badge_name: string
+  badge_description?: string
+  badge_icon?: string
+  earned_at: string
+}
+
+interface LearningStreak {
+  current_streak: number
+  longest_streak: number
+  last_activity_date: string
+}
 
 export default function Dashboard() {
-  // Mock user data - in real app, this would come from database
-  const userData = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    joinedDate: '2024-01-15',
-    streak: 7,
-    totalHours: 45,
-    completedModules: 2,
-    achievements: [
-      { id: 1, name: 'First Steps', description: 'Completed first lesson', icon: '🎯', earnedAt: '2024-01-16' },
-      { id: 2, name: 'Foundation Explorer', description: 'Completed Module 1', icon: '🏗️', earnedAt: '2024-01-25' },
-      { id: 3, name: 'AI Whisperer', description: 'Completed Module 2', icon: '🤖', earnedAt: '2024-02-05' },
-      { id: 4, name: 'Speed Reader', description: 'Read 10 lessons in a day', icon: '⚡', earnedAt: '2024-02-03' },
-      { id: 5, name: 'Quiz Master', description: 'Passed 5 quizzes with 90%+ score', icon: '🎓', earnedAt: '2024-02-06' },
-    ],
-    recentActivity: [
-      { id: 1, type: 'lesson', title: 'React Fundamentals', module: 'Building the Product', timestamp: '2 hours ago' },
-      { id: 2, type: 'quiz', title: 'Prompting & AI Collaboration Quiz', score: 85, timestamp: 'Yesterday' },
-      { id: 3, type: 'achievement', title: 'Earned "AI Whisperer" badge', timestamp: '2 days ago' },
-      { id: 4, type: 'lesson', title: 'Advanced Prompting Strategies', module: 'Prompting & AI Collaboration', timestamp: '3 days ago' },
-    ],
-    moduleProgress: {
-      1: { completed: true, progress: 100, score: 92 },
-      2: { completed: true, progress: 100, score: 85 },
-      3: { completed: false, progress: 35, score: null },
-      4: { completed: false, progress: 0, score: null },
-      5: { completed: false, progress: 0, score: null },
-      6: { completed: false, progress: 0, score: null },
+  const { user } = useAuth()
+  const [userData, setUserData] = useState({
+    name: user?.user_metadata?.full_name || user?.email || 'User',
+    email: user?.email || '',
+    joinedDate: user?.created_at || new Date().toISOString(),
+    streak: 0,
+    totalHours: 0,
+    completedModules: 0,
+    achievements: [] as Achievement[],
+    recentActivity: [] as any[],
+    moduleProgress: {} as Record<number, { completed: boolean; progress: number; score: number | null }>
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (user) {
+      fetchUserData()
+    }
+  }, [user])
+
+  const fetchUserData = async () => {
+    if (!user) return
+
+    try {
+      // Fetch user progress
+      const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+
+      // Fetch achievements
+      const { data: achievementsData } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('earned_at', { ascending: false })
+
+      // Fetch learning streak
+      const { data: streakData } = await supabase
+        .from('learning_streaks')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      // Process progress data
+      const moduleProgress: Record<number, { completed: boolean; progress: number; score: number | null }> = {}
+      let completedModules = 0
+
+      progressData?.forEach((progress: UserProgress) => {
+        const moduleId = parseInt(progress.module_id)
+        moduleProgress[moduleId] = {
+          completed: progress.completed,
+          progress: progress.progress_percentage,
+          score: null // Quiz scores would come from quiz_results table
+        }
+        if (progress.completed) completedModules++
+      })
+
+      // Initialize all modules with 0 progress if not found
+      moduleData.forEach(module => {
+        if (!moduleProgress[module.id]) {
+          moduleProgress[module.id] = {
+            completed: false,
+            progress: 0,
+            score: null
+          }
+        }
+      })
+
+      setUserData(prev => ({
+        ...prev,
+        streak: streakData?.current_streak || 0,
+        completedModules,
+        achievements: achievementsData || [],
+        moduleProgress,
+        recentActivity: [] // TODO: Implement recent activity tracking
+      }))
+
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -66,6 +149,25 @@ export default function Dashboard() {
     userData.moduleProgress[module.id]?.progress === 0
   )
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl h-40 mb-8"></div>
+            <div className="grid md:grid-cols-4 gap-6 mb-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-gray-300 dark:bg-gray-700 rounded-lg h-24"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const isNewUser = userData.completedModules === 0 && userData.achievements.length === 0
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,10 +182,13 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold mb-2">
-                  Selamat datang kembali, {userData.name}! 👋
+                  {isNewUser ? `Selamat datang, ${userData.name}! 🎉` : `Selamat datang kembali, ${userData.name}! 👋`}
                 </h1>
                 <p className="text-primary-100 text-lg">
-                  Anda sudah belajar selama {userData.totalHours} jam dan menyelesaikan {userData.completedModules} modul. Keep going!
+                  {isNewUser 
+                    ? "Mari mulai perjalanan coding Anda! Pilih modul pertama untuk memulai belajar."
+                    : `Anda sudah belajar selama ${userData.totalHours} jam dan menyelesaikan ${userData.completedModules} modul. Keep going!`
+                  }
                 </p>
               </div>
               
@@ -319,40 +424,50 @@ export default function Dashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {userData.recentActivity.map((activity) => (
-                      <div key={activity.id} className="flex items-start space-x-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          activity.type === 'lesson' ? 'bg-blue-100 dark:bg-blue-900' :
-                          activity.type === 'quiz' ? 'bg-green-100 dark:bg-green-900' :
-                          'bg-yellow-100 dark:bg-yellow-900'
-                        }`}>
-                          {activity.type === 'lesson' && <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />}
-                          {activity.type === 'quiz' && <Target className="h-5 w-5 text-green-600 dark:text-green-400" />}
-                          {activity.type === 'achievement' && <Trophy className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />}
-                        </div>
-                        
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {activity.title}
-                          </p>
-                          {activity.type === 'lesson' && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Module: {activity.module}
+                  {userData.recentActivity.length > 0 ? (
+                    <div className="space-y-4">
+                      {userData.recentActivity.map((activity) => (
+                        <div key={activity.id} className="flex items-start space-x-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            activity.type === 'lesson' ? 'bg-blue-100 dark:bg-blue-900' :
+                            activity.type === 'quiz' ? 'bg-green-100 dark:bg-green-900' :
+                            'bg-yellow-100 dark:bg-yellow-900'
+                          }`}>
+                            {activity.type === 'lesson' && <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />}
+                            {activity.type === 'quiz' && <Target className="h-5 w-5 text-green-600 dark:text-green-400" />}
+                            {activity.type === 'achievement' && <Trophy className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              {activity.title}
                             </p>
-                          )}
-                          {activity.type === 'quiz' && activity.score && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Score: {activity.score}%
+                            {activity.type === 'lesson' && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Module: {activity.module}
+                              </p>
+                            )}
+                            {activity.type === 'quiz' && activity.score && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Score: {activity.score}%
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {activity.timestamp}
                             </p>
-                          )}
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {activity.timestamp}
-                          </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 dark:text-gray-400 mb-2">Belum ada aktivitas</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
+                        Mulai belajar untuk melihat aktivitas Anda di sini
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -377,30 +492,48 @@ export default function Dashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {userData.achievements.slice(0, 4).map((achievement) => (
-                      <div key={achievement.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-lg">
-                        <div className="text-2xl">{achievement.icon}</div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {achievement.name}
-                          </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {achievement.description}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {new Date(achievement.earnedAt).toLocaleDateString('id-ID')}
-                          </p>
-                        </div>
+                  {userData.achievements.length > 0 ? (
+                    <>
+                      <div className="space-y-4">
+                        {userData.achievements.slice(0, 4).map((achievement) => (
+                          <div key={achievement.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-lg">
+                            <div className="text-2xl">{achievement.badge_icon || '🏆'}</div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900 dark:text-white">
+                                {achievement.badge_name}
+                              </h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {achievement.badge_description}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {new Date(achievement.earned_at).toLocaleDateString('id-ID')}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  
-                  <Link href="/achievements">
-                    <Button variant="outline" className="w-full mt-4">
-                      Lihat Semua Achievement
-                    </Button>
-                  </Link>
+                      
+                      <Link href="/achievements">
+                        <Button variant="outline" className="w-full mt-4">
+                          Lihat Semua Achievement
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Trophy className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 dark:text-gray-400 mb-2">Belum ada achievement</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mb-4">
+                        Selesaikan lesson dan quiz untuk mendapatkan badge pertama Anda
+                      </p>
+                      <Link href="/modules">
+                        <Button size="sm">
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Mulai Belajar
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
