@@ -30,28 +30,21 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email',
-      info: 'hello@vibecoding.com',
+      info: 'anton.prafanto@gmail.com',
       description: 'Kirim email untuk pertanyaan umum',
-      action: 'mailto:hello@vibecoding.com'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Live Chat',
-      info: 'Available 24/7',
-      description: 'Chat langsung dengan tim support',
-      action: '#'
+      action: 'mailto:anton.prafanto@gmail.com'
     },
     {
       icon: Phone,
       title: 'WhatsApp',
-      info: '+62 812-3456-7890',
+      info: '+62 811-5533-93',
       description: 'Untuk bantuan urgent',
-      action: 'https://wa.me/6281234567890'
+      action: 'https://wa.me/6281155339'
     },
     {
       icon: MapPin,
       title: 'Office',
-      info: 'Jakarta, Indonesia',
+      info: 'Samarinda, Indonesia',
       description: 'Kantor pusat kami',
       action: '#'
     }
@@ -81,11 +74,7 @@ export default function Contact() {
   ]
 
   const socialLinks = [
-    { name: 'Discord Community', url: '#', icon: '💬' },
-    { name: 'YouTube Channel', url: '#', icon: '📺' },
-    { name: 'Instagram', url: '#', icon: '📷' },
-    { name: 'LinkedIn', url: '#', icon: '💼' },
-    { name: 'Twitter', url: '#', icon: '🐦' },
+    { name: 'Telegram', url: 'https://t.me/ngevibecoding', icon: '📱' },
   ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -344,7 +333,6 @@ export default function Contact() {
                     </div>
                     <p className="text-sm">
                       <span className="font-medium text-success-600">Email:</span> 24 jam<br />
-                      <span className="font-medium text-success-600">Live Chat:</span> Real-time<br />
                       <span className="font-medium text-success-600">WhatsApp:</span> 2-4 jam
                     </p>
                   </div>
@@ -366,11 +354,13 @@ export default function Contact() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-3">
                     {socialLinks.map((social, index) => (
                       <a
                         key={index}
                         href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                       >
                         <span className="text-lg">{social.icon}</span>
