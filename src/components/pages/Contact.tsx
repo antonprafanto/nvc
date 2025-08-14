@@ -332,8 +332,8 @@ export default function Contact() {
                       Response Time
                     </div>
                     <p className="text-sm">
-                      <span className="font-medium text-success-600">Email:</span> 24 jam<br />
-                      <span className="font-medium text-success-600">WhatsApp:</span> 2-4 jam
+                      <span className="font-medium text-success-600">Email:</span> 2-6 jam<br />
+                      <span className="font-medium text-success-600">WhatsApp:</span> 2-6 jam
                     </p>
                   </div>
                 </CardContent>
