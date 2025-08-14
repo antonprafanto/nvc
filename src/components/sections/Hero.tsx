@@ -7,9 +7,9 @@ import { motion } from 'framer-motion'
 
 export default function Hero() {
   const stats = [
-    { icon: Users, label: 'Pelajar Aktif', value: '1,000+' },
+    { icon: Users, label: 'Platform Baru', value: '2025' },
     { icon: BookOpen, label: 'Modul Pembelajaran', value: '6' },
-    { icon: Award, label: 'Badge Tersedia', value: '20+' },
+    { icon: Award, label: 'Gratis Selamanya', value: '100%' },
   ]
 
   return (
@@ -28,7 +28,7 @@ export default function Hero() {
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
               <span className="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></span>
-              Platform Pembelajaran Terdepan
+              Platform Baru - Launched 2025
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
@@ -39,9 +39,9 @@ export default function Hero() {
             </h1>
             
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
-              Dulu bikin website & app butuh tim developer mahal dan waktu berbulan-bulan. Sekarang? 
-              AI jadi partner coding kamu yang siap 24/7. Dari konsep di kepala sampai produk digital yang 
-              bisa dipake user, semua bisa kamu lakuin sendiri. Zero to hero, literally!
+              Platform pembelajaran baru yang dibuat khusus untuk orang non-IT. Belajar cara membuat website 
+              dan aplikasi dengan bantuan AI, tanpa perlu background programming. Website ini baru saja dibuat 
+              dan terus dikembangkan untuk membantu siapa saja bisa berkarya di dunia digital.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -116,10 +116,10 @@ export default function Hero() {
                 
                 <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                   <Users className="h-4 w-4 mr-1" />
-                  <span>234 siswa</span>
+                  <span>Platform baru</span>
                   <span className="mx-2">•</span>
                   <BookOpen className="h-4 w-4 mr-1" />
-                  <span>12 materi</span>
+                  <span>4 lessons</span>
                 </div>
               </div>
               

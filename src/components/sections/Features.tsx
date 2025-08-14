@@ -89,7 +89,7 @@ export default function Features() {
               Kenapa Pilih VibeCoding?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Platform pembelajaran yang dirancang khusus untuk pemula dengan teknologi terdepan dan metode yang terbukti efektif.
+              Platform pembelajaran baru yang dibuat khusus untuk orang non-IT. Belajar membuat website dan aplikasi dengan bantuan AI, tanpa perlu background programming.
             </p>
           </motion.div>
         </div>
@@ -182,37 +182,37 @@ export default function Features() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-                95%
+                Baru
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Success Rate
+                Platform Launch
               </div>
             </div>
             
             <div>
               <div className="text-3xl font-bold text-secondary-600 dark:text-secondary-400 mb-2">
-                1,000+
+                6
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Happy Learners
+                Modul Pembelajaran
               </div>
             </div>
             
             <div>
               <div className="text-3xl font-bold text-success-600 dark:text-success-400 mb-2">
-                4.9/5
+                100%
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Rating
+                Gratis Selamanya
               </div>
             </div>
             
             <div>
               <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-                24/7
+                2-6h
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Support
+                Response Time
               </div>
             </div>
           </div>

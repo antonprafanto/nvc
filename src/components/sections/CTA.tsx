@@ -17,22 +17,10 @@ export default function CTA() {
 
   const testimonials = [
     {
-      name: 'Ahmad Rizki',
-      role: 'UMKM Owner',
-      content: 'Dalam 3 bulan saya sudah bisa bikin website toko online sendiri. Kursus ini benar-benar mengubah bisnis saya!',
-      rating: 5
-    },
-    {
-      name: 'Sari Wulandari',
-      role: 'Fresh Graduate',
-      content: 'Sebagai pemula total, saya sangat terbantu dengan pendekatan yang mudah dipahami. Sekarang saya sudah kerja sebagai developer.',
-      rating: 5
-    },
-    {
-      name: 'Budi Santoso',
-      role: 'Career Switcher',
-      content: 'Umur 35 tahun saya berani switch career jadi developer. Platform ini memberikan confidence yang saya butuhkan.',
-      rating: 5
+      name: 'Testimoni akan tampil di sini',
+      role: 'Dari pengguna real',
+      content: 'Platform ini baru saja diluncurkan. Testimoni dari pengguna yang sudah mencoba platform ini akan tampil di sini secara otomatis.',
+      rating: 0
     }
   ]
 
@@ -55,8 +43,8 @@ export default function CTA() {
             </h2>
             
             <p className="text-xl text-primary-100 mb-8">
-              Bergabung dengan ribuan orang yang sudah memulai karir sebagai developer. 
-              Dapatkan skill yang dibutuhkan industri dan bangun masa depan yang lebih cerah.
+              Platform pembelajaran baru yang dirancang untuk orang non-IT. Mulai perjalanan Anda 
+              membuat website dan aplikasi dengan bantuan AI, tanpa perlu background programming.
             </p>
             
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -98,7 +86,7 @@ export default function CTA() {
             </div>
             
             <div className="mt-8 text-primary-100 text-sm">
-              <p>🎉 <strong>Promo Terbatas:</strong> Daftar sekarang dan dapatkan akses gratis ke semua materi premium!</p>
+              <p>🎉 <strong>Platform Baru:</strong> Semua materi pembelajaran gratis selamanya untuk semua pengguna!</p>
             </div>
           </motion.div>
           
@@ -112,10 +100,10 @@ export default function CTA() {
           >
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-white mb-2">
-                Apa Kata Mereka?
+                Testimoni Pengguna
               </h3>
               <p className="text-primary-100">
-                Dengar langsung dari alumni yang sudah sukses
+                Feedback dari pengguna yang telah mencoba platform
               </p>
             </div>
             
@@ -128,11 +116,13 @@ export default function CTA() {
                 viewport={{ once: true }}
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
               >
-                <div className="flex items-center mb-3">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
+                {testimonial.rating > 0 && (
+                  <div className="flex items-center mb-3">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                )}
                 
                 <p className="text-white mb-4 italic">
                   "{testimonial.content}"
@@ -164,13 +154,10 @@ export default function CTA() {
               className="text-center"
             >
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-3xl font-bold text-white mb-2">1,000+</div>
-                <div className="text-primary-100">Developer Sukses</div>
+                <div className="text-3xl font-bold text-white mb-2">Baru</div>
+                <div className="text-primary-100">Platform Launch 2025</div>
                 <div className="flex justify-center mt-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                  ))}
-                  <span className="text-white ml-2 text-sm">4.9/5 Rating</span>
+                  <span className="text-white text-sm">Rating akan muncul setelah ada feedback pengguna</span>
                 </div>
               </div>
             </motion.div>
