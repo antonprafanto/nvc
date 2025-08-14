@@ -8,8 +8,8 @@ import { motion } from 'framer-motion'
 export default function Hero() {
   const stats = [
     { icon: Users, label: 'Platform Baru', value: '2025' },
-    { icon: BookOpen, label: 'Modul Pembelajaran', value: '6' },
-    { icon: Award, label: 'Gratis Selamanya', value: '100%' },
+    { icon: BookOpen, label: 'Modul Gratis', value: '2' },
+    { icon: Award, label: 'Premium', value: '45k/bln' },
   ]
 
   return (
@@ -47,7 +47,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Link href="/auth/register">
                 <Button size="lg" className="w-full sm:w-auto group">
-                  Mulai Belajar Gratis
+                  Coba 2 Modul Gratis
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>

@@ -52,8 +52,8 @@ export default function Contact() {
 
   const faqs = [
     {
-      question: 'Apakah VibeCoding benar-benar gratis?',
-      answer: 'Ya! Semua modul dasar kami gratis. Kami juga menyediakan premium features untuk experience yang lebih enhanced.'
+      question: 'Bagaimana sistem pricing VibeCoding?',
+      answer: 'Modul 1-2 gratis selamanya untuk mencoba. Akses modul premium (3-6) hanya 45k/bulan - sangat terjangkau untuk semua kalangan.'
     },
     {
       question: 'Berapa lama waktu yang dibutuhkan untuk menyelesaikan semua modul?',

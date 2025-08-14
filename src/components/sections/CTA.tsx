@@ -7,12 +7,12 @@ import Link from 'next/link'
 
 export default function CTA() {
   const benefits = [
-    'Akses seumur hidup ke semua materi',
-    'Bimbingan langsung dari mentor berpengalaman',
-    'Sertifikat completion setiap modul',
-    'Akses ke komunitas exclusive developer',
-    'Update materi terbaru secara berkala',
-    'Project portfolio yang bisa dipamerkan'
+    'Modul 1-2 gratis selamanya',
+    'Akses premium hanya 45k/bulan',
+    'Belajar coding dengan bantuan AI',
+    'Materi khusus untuk orang non-IT',
+    'Update konten berkala',
+    'Project portfolio yang aplikatif'
   ]
 
   const testimonials = [
@@ -69,7 +69,7 @@ export default function CTA() {
                   size="lg" 
                   className="w-full sm:w-auto bg-white text-primary-700 hover:bg-primary-50 group"
                 >
-                  Mulai Belajar Gratis
+                  Coba 2 Modul Gratis
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -86,7 +86,7 @@ export default function CTA() {
             </div>
             
             <div className="mt-8 text-primary-100 text-sm">
-              <p>🎉 <strong>Platform Baru:</strong> Semua materi pembelajaran gratis selamanya untuk semua pengguna!</p>
+              <p>🎉 <strong>Mulai Gratis:</strong> Modul 1-2 gratis selamanya, akses modul premium hanya 45k/bulan!</p>
             </div>
           </motion.div>
           

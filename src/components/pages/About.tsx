@@ -57,8 +57,8 @@ export default function About() {
   const stats = [
     { number: 'Baru', label: 'Platform Launch', icon: '🚀' },
     { number: '2025', label: 'Year Started', icon: '📅' },
-    { number: '6', label: 'Learning Modules', icon: '📚' },
-    { number: 'Gratis', label: 'All Content', icon: '💰' }
+    { number: '2', label: 'Modul Gratis', icon: '📚' },
+    { number: '45k', label: 'Premium/Bulan', icon: '💰' }
   ]
 
   const milestones = [
@@ -190,7 +190,7 @@ export default function About() {
                   </li>
                   <li className="flex items-center">
                     <Award className="h-5 w-5 mr-3" />
-                    Gratis untuk semua learner
+                    Modul dasar gratis, premium terjangkau
                   </li>
                   <li className="flex items-center">
                     <Users className="h-5 w-5 mr-3" />
@@ -380,7 +380,7 @@ export default function About() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/register">
                 <Button size="lg" className="bg-white text-primary-700 hover:bg-primary-50">
-                  Mulai Belajar Sekarang
+                  Coba 2 Modul Gratis
                 </Button>
               </Link>
               

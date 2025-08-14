@@ -219,7 +219,7 @@ export default function CourseOverview() {
           </p>
           <Link href="/auth/register">
             <Button size="lg">
-              Daftar Sekarang - Gratis!
+              Coba 2 Modul Gratis!
             </Button>
           </Link>
         </motion.div>

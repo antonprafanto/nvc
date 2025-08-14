@@ -200,10 +200,10 @@ export default function Features() {
             
             <div>
               <div className="text-3xl font-bold text-success-600 dark:text-success-400 mb-2">
-                100%
+                45k
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Gratis Selamanya
+                Premium / Bulan
               </div>
             </div>
             
