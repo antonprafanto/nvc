@@ -69,6 +69,9 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       fetchUserData()
+    } else {
+      // If no user, set default empty state and stop loading
+      setLoading(false)
     }
   }, [user])
 
@@ -132,15 +135,26 @@ export default function Dashboard() {
 
     } catch (error) {
       console.error('Error fetching user data:', error)
+      // Set default empty state on error
+      setUserData(prev => ({
+        ...prev,
+        streak: 0,
+        completedModules: 0,
+        achievements: [],
+        moduleProgress: {},
+        recentActivity: []
+      }))
     } finally {
       setLoading(false)
     }
   }
 
-  const overallProgress = Math.round(
-    Object.values(userData.moduleProgress).reduce((acc, module) => acc + module.progress, 0) / 
-    Object.keys(userData.moduleProgress).length
-  )
+  const overallProgress = Object.keys(userData.moduleProgress).length > 0 
+    ? Math.round(
+        Object.values(userData.moduleProgress).reduce((acc, module) => acc + module.progress, 0) / 
+        Object.keys(userData.moduleProgress).length
+      )
+    : 0
 
   const nextModule = moduleData.find(module => 
     userData.moduleProgress[module.id] && 
