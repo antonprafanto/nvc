@@ -19,32 +19,11 @@ import Link from 'next/link'
 export default function About() {
   const team = [
     {
-      name: 'Ahmad Sutrisno',
-      role: 'Founder & Lead Instructor',
-      bio: 'Ex-Google engineer dengan 8+ tahun pengalaman. Passionate about education dan democratizing coding knowledge.',
+      name: 'Anton Prafanto',
+      role: 'Founder & Creator',
+      bio: 'Seorang developer yang ingin membagikan pengetahuan coding dan membantu orang awam membuat website/aplikasi dengan bantuan AI.',
       avatar: '👨‍💻',
-      skills: ['React', 'Node.js', 'AI/ML', 'Product Management']
-    },
-    {
-      name: 'Sari Dewi',
-      role: 'Head of Curriculum',
-      bio: 'Former Facebook engineer. Specialist dalam designing effective learning experiences dan curriculum development.',
-      avatar: '👩‍🏫',
-      skills: ['JavaScript', 'Python', 'UI/UX', 'Education Technology']
-    },
-    {
-      name: 'Budi Rahardjo',
-      role: 'AI Integration Specialist',
-      bio: 'PhD in Computer Science. Expert dalam AI tools untuk education dan natural language processing.',
-      avatar: '🤖',
-      skills: ['AI/ML', 'Python', 'Data Science', 'NLP']
-    },
-    {
-      name: 'Maya Indira',
-      role: 'Community Manager',
-      bio: 'Membangun dan mengelola komunitas developer Indonesia. Ensuring everyone feels welcome dan supported.',
-      avatar: '👥',
-      skills: ['Community Building', 'Content Strategy', 'Social Media', 'Event Management']
+      skills: ['Web Development', 'AI Tools', 'Teaching', 'Content Creation']
     }
   ]
 
@@ -76,32 +55,32 @@ export default function About() {
   ]
 
   const stats = [
-    { number: '10,000+', label: 'Students Enrolled', icon: '👨‍🎓' },
-    { number: '95%', label: 'Completion Rate', icon: '✅' },
-    { number: '4.9/5', label: 'Average Rating', icon: '⭐' },
-    { number: '24/7', label: 'Community Support', icon: '💬' }
+    { number: 'Baru', label: 'Platform Launch', icon: '🚀' },
+    { number: '2025', label: 'Year Started', icon: '📅' },
+    { number: '6', label: 'Learning Modules', icon: '📚' },
+    { number: 'Gratis', label: 'All Content', icon: '💰' }
   ]
 
   const milestones = [
     {
-      year: '2023',
-      title: 'VibeCoding Founded',
-      description: 'Started with a vision to democratize coding education in Indonesia'
+      year: 'Jan 2025',
+      title: 'Ide Awal',
+      description: 'Mulai konsep platform pembelajaran coding dengan bantuan AI untuk orang awam'
     },
     {
-      year: '2023',
-      title: 'First 1000 Students',
-      description: 'Reached our first milestone with 1000+ active learners'
+      year: 'Feb 2025',
+      title: 'Development Dimulai',
+      description: 'Membangun website dan menyusun materi pembelajaran pertama'
     },
     {
-      year: '2024', 
-      title: 'AI Integration',
-      description: 'Launched AI-powered learning assistant untuk personalized experience'
+      year: 'Mar 2025',
+      title: 'Platform Launch',
+      description: 'Launching platform dengan 6 modul pembelajaran dasar'
     },
     {
-      year: '2024',
-      title: 'Community Expansion',
-      description: 'Expanded to 10+ cities dengan local community chapters'
+      year: 'Future',
+      title: 'Pengembangan Berkelanjutan',
+      description: 'Terus menambah konten dan improve berdasarkan feedback learner'
     }
   ]
 
@@ -123,7 +102,7 @@ export default function About() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Kami adalah platform pembelajaran coding yang didedikasikan untuk memberdayakan developer Indonesia dengan skill yang dibutuhkan industri global.
+              Platform pembelajaran yang baru saja dibuat dengan misi membantu orang awam memahami coding dan membuat website/aplikasi dengan bantuan AI.
             </p>
           </motion.div>
 
@@ -169,9 +148,9 @@ export default function About() {
                     🎯 Misi
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    Membuat coding education accessible, affordable, dan effective untuk semua orang Indonesia. 
-                    Kami ingin menghilangkan barrier yang mencegah orang belajar programming dan membantu mereka 
-                    achieve their career goals di tech industry.
+                    Memberikan pembelajaran coding yang mudah dipahami untuk orang awam. Mengajarkan bagaimana 
+                    memanfaatkan AI tools untuk membuat website dan aplikasi tanpa perlu menguasai coding secara mendalam. 
+                    Platform ini baru saja dibuat dan terus dikembangkan.
                   </p>
                 </div>
                 
@@ -180,9 +159,9 @@ export default function About() {
                     🚀 Visi
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    Menjadi platform pembelajaran coding #1 di Indonesia yang menghasilkan developer berkualitas tinggi 
-                    dan siap bersaing di pasar global. Kami envision a future dimana setiap orang Indonesia 
-                    memiliki kesempatan yang sama untuk sukses di tech industry.
+                    Menjadi sumber pembelajaran terpercaya yang membantu siapa saja bisa membuat website atau aplikasi 
+                    sendiri dengan bantuan AI. Membuktikan bahwa dengan pendekatan yang tepat, coding tidak harus rumit 
+                    dan semua orang bisa belajar teknologi modern.
                   </p>
                 </div>
               </div>
@@ -203,19 +182,19 @@ export default function About() {
                 <ul className="space-y-3">
                   <li className="flex items-center">
                     <Zap className="h-5 w-5 mr-3" />
-                    10,000+ students trained successfully
+                    Platform baru dalam pengembangan
                   </li>
                   <li className="flex items-center">
                     <Star className="h-5 w-5 mr-3" />
-                    85% of graduates got job offers
+                    Fokus pada pembelajaran AI-assisted coding
                   </li>
                   <li className="flex items-center">
                     <Award className="h-5 w-5 mr-3" />
-                    Partnership dengan 100+ companies
+                    Gratis untuk semua learner
                   </li>
                   <li className="flex items-center">
                     <Users className="h-5 w-5 mr-3" />
-                    Active communities in 15+ cities
+                    Dimulai dari Samarinda, Indonesia
                   </li>
                 </ul>
               </div>
@@ -281,14 +260,14 @@ export default function About() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Meet Our Team
+              Creator Platform
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              Passionate educators dan engineers yang committed untuk your success
+              Orang di balik platform pembelajaran ini
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex justify-center">
             {team.map((member, index) => (
               <motion.div
                 key={member.name}
@@ -297,7 +276,7 @@ export default function About() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full text-center hover:shadow-lg transition-shadow duration-300">
+                <Card className="w-80 text-center hover:shadow-lg transition-shadow duration-300">
                   <CardContent className="p-6">
                     <div className="text-6xl mb-4">{member.avatar}</div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
